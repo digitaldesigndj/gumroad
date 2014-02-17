@@ -9,6 +9,13 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
+var sys = require('sys');
+var exec = require('child_process').exec;
+
+function puts(error, stdout, stderr) { sys.puts(stdout) }
+
+var fs = require('fs');
+
 var app = express();
 
 // all environments
@@ -34,7 +41,14 @@ app.get('/users', user.list);
 
 app.post('/secret', function(req,res){
   console.log( req.body );
-  res.send("ok")
+  console.log( req.body['subdomain/username'] );
+  var sites = fs.readdirSync('/etc/nginx/sites-available');
+  console.log(sites);
+  console.log( sites.length );
+  res.send("http://sticko.tdy721.com/?user="+req.body['subdomain/username']);
+  console.log( 'bash blog.sh '+req.body['subdomain/username']+'.tdy721 com 3015');
+  // exec("bash blog.sh" , puts);
+
 });
 
 http.createServer(app).listen(app.get('port'), function(){
