@@ -1,11 +1,10 @@
-
 /**
  * Module dependencies.
  */
 
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user');
+var purchases = require('./routes/purchases');
 var http = require('http');
 var path = require('path');
 
@@ -19,7 +18,7 @@ var fs = require('fs');
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || 3030);
+app.set('port', 3030); // process.env.PORT || 3030);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.favicon());
@@ -37,18 +36,25 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/users', user.list);
+app.get('/purchases', purchases.list);
 
 app.post('/secret', function(req,res){
   console.log( req.body );
-  console.log( req.body['subdomain/username'] );
-  var sites = fs.readdirSync('/etc/nginx/sites-available');
-  console.log(sites);
-  console.log( sites.length );
-  res.send("http://sticko.tdy721.com/?user="+req.body['subdomain/username']);
+  // console.log( req.body['subdomain/username'] );
+  // var sites = fs.readdirSync('/etc/nginx/sites-available');
+  // console.log(sites);
+  // console.log( sites.length );
+  console.log( req.header('host') );
+  // res.send("http://sticko.tdy721.com/?user="+req.body['subdomain/username']);
   console.log( 'bash blog.sh '+req.body['subdomain/username']+'.tdy721 com 3015');
   // exec("bash blog.sh" , puts);
+  res.set('Content-Type', 'text/plain');
+  return res.send("http://gum.hyprtxt.com/webhook-success/");
+  // res.send("http://" + (req.header('host')) + "/?slug=THATROCKS" );
+});
 
+app.get('/webhook-success/', function(req, res) {
+  return res.send("Hi ! DOOD!");
 });
 
 http.createServer(app).listen(app.get('port'), function(){
