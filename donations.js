@@ -1,6 +1,6 @@
 /**
  * Module dependencies.
- * Responds to purchase webhook and creates products on notification
+ * Responds to donation webhook and creates products on notification
  */
 
 var express = require('express');
@@ -21,7 +21,7 @@ var smtpTransport = nodemailer.createTransport('SMTP', {
   }
 });
 
-var Purchase = require('./models/Purchase');
+var Donation = require('./models/Donation');
 var User = require('./models/User');
 
 var app = express();
@@ -51,11 +51,9 @@ app.post('/secret', function( req, res ) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) {
       console.log( err );
-      else {
-        return res.send("http://starbound.today/signup?email=" + req.body.email );
-      }
+      return res.send("http://boundstar.com/register?email=" + req.body.email );
     }
-    else{
+    else {
       return res.send("http://boundstar.com/thanks" + req.body.email );
     }
   });
@@ -72,13 +70,13 @@ app.post('/gumroad', function( req, res ) {
     var mailOptions = {
       to: req.body.email,
       from: 'tdy721@gmail.com',
-      subject: 'Thanks for your purchase',
-      text: 'It looks like you have not yet registered, your member code is this url: http://starbound.today/purchase/' + hash
-      // , html: fs.readFileSync('./public/email/purchase_thanks.html').toString().replace(/\{\{code\}\}/g, hash)
+      subject: 'Thanks for your donation',
+      text: 'It looks like you have not yet registered, your member code is this url: http://starbound.today/donation/' + hash
+      // , html: fs.readFileSync('./public/email/donation_thanks.html').toString().replace(/\{\{code\}\}/g, hash)
     };
-    // This is a purchase 
+    // This is a donation 
     console.log( req.body );
-    var purchase = new Purchase({
+    var donation = new Donation({
       url_hash: hash,
       seller_id: req.body.seller_id,
       product_id: req.body.product_id,
@@ -101,13 +99,14 @@ app.post('/gumroad', function( req, res ) {
         console.log(req.body.full_name);
         // player.name = req.body.full_name;
         var total = req.body.price;
-        player.
-        purchase.claimed = true;
-        purchase.save(function(err) {
+
+        donation.claimed = true;
+        donation.save(function(err) {
           if (err) { return err; }
-            console.log( 'purchase saved' );
+            console.log( 'donation saved' );
             player.save(function(err) {
-              console.log( 'User bought server tokens, '+req.body.email+' has been creditied' );
+              console.log( 'User donated, '+req.body.email+' has been creditied' );
+              mailOptions.text = "Thank's for your support!";
               smtpTransport.sendMail(mailOptions, function(err) {
                 if (err) { return err; }
                 res.redirect('/');
@@ -116,9 +115,9 @@ app.post('/gumroad', function( req, res ) {
         });
       }else{
         console.log( 'eMailed member code to '+req.body.email+', Waiting to be claimed' );
-        purchase.save(function(err) {
+        donation.save(function(err) {
           if (err) { return err; }
-            console.log( 'purchase saved' );
+            console.log( 'donation saved' );
             smtpTransport.sendMail(mailOptions, function(err, response) {
               if (err) { return err; }
               console.log( response );
