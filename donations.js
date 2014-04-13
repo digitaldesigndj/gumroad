@@ -54,10 +54,10 @@ app.post('/secret', function( req, res ) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) {
       console.log( err );
-      return res.send("http://boundstar.com/register?email=" + req.body.email );
+      res.send("http://boundstar.com/register?email=" + req.body.email );
     }
     else {
-      return res.send("http://boundstar.com/thanks" + req.body.email );
+      res.send("http://boundstar.com/thanks" + req.body.email );
     }
   });
 });
