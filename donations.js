@@ -22,7 +22,7 @@ var smtpTransport = nodemailer.createTransport('SMTP', {
 });
 
 var Donation = require('./models/Donation');
-var User = require('./models/User');
+var Player = require('./models/Player');
 
 var app = express();
 
@@ -51,13 +51,13 @@ app.post('/secret', function( req, res ) {
   console.log( 'Webhook!', req.body );
   res.set('Content-Type', 'text/plain');
   //" + req.header('host') + "
-  User.findOne({ email: req.body.email }, function(err, user) {
+  Player.findOne({ email: req.body.email }, function(err, user) {
     if (err) {
       console.log( err );
-      res.send("http://boundstar.com/register?email=" + req.body.email );
+      res.end("http://boundstar.com/register?email=" + req.body.email );
     }
     else {
-      res.send("http://boundstar.com/thanks" + req.body.email );
+      res.end("http://boundstar.com/thanks");
     }
   });
 });
