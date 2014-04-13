@@ -1,6 +1,6 @@
 /**
  * Module dependencies.
- * Responds to donation webhook and creates products on notification
+ * Responds to donation webhook, gumroad.js in starbound-today created purchase records.
  */
 
 var express = require('express');
@@ -21,7 +21,6 @@ var smtpTransport = nodemailer.createTransport('SMTP', {
   }
 });
 
-var Donation = require('./models/Donation');
 var Player = require('./models/Player');
 
 var app = express();
