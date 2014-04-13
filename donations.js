@@ -27,7 +27,7 @@ var User = require('./models/User');
 var app = express();
 
 // all environments
-app.set('port', 3002);
+app.set('port', proceess.env.PORT || 3003);
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
