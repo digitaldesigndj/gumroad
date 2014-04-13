@@ -44,6 +44,9 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
+app.get('/', function( req, res ) { res.send('The application is listening'); });
+
+// Webhook responder
 app.post('/secret', function( req, res ) {
   console.log( 'Webhook!', req.body );
   res.set('Content-Type', 'text/plain');
